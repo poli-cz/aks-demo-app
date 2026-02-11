@@ -1,0 +1,41 @@
+replicaCount: 2
+
+image:
+  repository: lakmoosacr.azurecr.io/aks-demo-app
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 8080
+
+env:
+  APP_ENV: dev
+  APP_VERSION: "1.0.0"
+
+secret:
+  enabled: true
+  DEMO_API_KEY: "change-me-later"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+probes:
+  readinessPath: /readyz
+  livenessPath: /healthz
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 60
+
+namespace:
+  create: false
+  name: demo
