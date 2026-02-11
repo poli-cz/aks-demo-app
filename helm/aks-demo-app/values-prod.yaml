@@ -1,0 +1,41 @@
+replicaCount: 3
+
+image:
+  repository: lakmoosacr.azurecr.io/aks-demo-app
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+env:
+  APP_ENV: prod
+  APP_VERSION: "1.0.0"
+
+secret:
+  enabled: true
+  DEMO_API_KEY: "prod-key-change-me"
+
+resources:
+  requests:
+    cpu: 150m
+    memory: 256Mi
+  limits:
+    cpu: 800m
+    memory: 768Mi
+
+probes:
+  readinessPath: /readyz
+  livenessPath: /healthz
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 8
+  targetCPUUtilizationPercentage: 60
+
+namespace:
+  create: false
+  name: demo
